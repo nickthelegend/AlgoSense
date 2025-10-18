@@ -1,0 +1,44 @@
+#######################################
+# Syntax Coloring Map For AlgoIoT
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+AlgoIoT	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+dataAddInt8Field	KEYWORD2
+dataAddUInt8Field	KEYWORD2
+dataAddInt16Field	KEYWORD2
+dataAddUInt16Field	KEYWORD2
+dataAddInt32Field	KEYWORD2
+dataAddUInt32Field	KEYWORD2
+dataAddFloatField	KEYWORD2
+dataAddShortStringField	KEYWORD2
+setDestinationAddress	KEYWORD2
+setAlgorandNetwork	KEYWORD2
+submitTransactionToAlgorand	KEYWORD2
+getTransactionID	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+ALGORAND_TESTNET	LITERAL1
+ALGORAND_MAINNET	LITERAL1
+ALGOIOT_NO_ERROR	LITERAL1
+ALGOIOT_NULL_POINTER_ERROR	LITERAL1
+ALGOIOT_JSON_ERROR	LITERAL1
+ALGOIOT_BAD_PARAM	LITERAL1
+ALGOIOT_MEMORY_ERROR	LITERAL1
+ALGOIOT_INTERNAL_GENERIC_ERROR	LITERAL1
+ALGOIOT_NETWORK_ERROR	LITERAL1
+ALGOIOT_MESSAGEPACK_ERROR	LITERAL1
+ALGOIOT_SIGNATURE_ERROR	LITERAL1
+ALGOIOT_TRANSACTION_ERROR	LITERAL1
+ALGOIOT_DATA_STRUCTURE_TOO_LONG	LITERAL1
