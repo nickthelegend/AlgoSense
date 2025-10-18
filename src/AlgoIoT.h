@@ -23,8 +23,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the License governing permissions and limitations under the License.
  * */
 
 
@@ -33,7 +32,7 @@
 
 #include <Arduino.h>
 #include <stdint.h>
-#include <HTTPClient.h>   // https://github.com/espressif/arduino-esp32/blob/master/libraries/HTTPClient/src/HTTPClient.h
+#include <HTTPClient.h>   // https://github.com/espressif/arduino-esp32/blob/master/libraries/HTTPClient/src/HTTPClient/HTTPClient.h
 #include <ArduinoJson.h>  // JSON needed for Algorand transactions. ArduinoJson because: https://arduinojson.org/news/2019/11/19/arduinojson-vs-arduino_json/
 #include "minmpk.h"
 // #include "algoiot_user_config.h"
@@ -80,6 +79,15 @@
 
 #define HTTP_CONNECT_TIMEOUT_MS 5000UL
 #define HTTP_QUERY_TIMEOUT_S 5
+
+#define ALGORAND_ASSET_TRANSFER_MIN_FIELDS 10 // Fields for asset transfer transaction: aamt, arcv, fee, fv, gen, gh, lv, snd, type, xaid
+#define DEFAULT_ASSET_ID 733709260 // Default asset ID to use for asset transfers
+#define ALGORAND_APPLICATION_OPTIN_MIN_FIELDS 9 // Fields for application opt-in: apan, apid, fee, fv, gen, gh, lv, snd, type
+#define DEFAULT_APPLICATION_ID 738608433 // Default application ID to use for application opt-ins
+
+// Add these constants after the existing constants
+#define ALGORAND_ASSET_CREATION_MIN_FIELDS 10 // Fields for asset creation: apar, fee, fv, gen, gh, lv, snd, type
+#define DEFAULT_ASSET_TOTAL 1 // Default total supply for created assets
 
 
 // Error codes
@@ -166,6 +174,42 @@ class AlgoIoT
   // Returns HTTP response code (200 = OK)
   int submitTransaction(msgPack msgPackTx); 
 
+  // Prepares an asset transfer transaction MessagePack for opt-in
+  // Returns error code (0 = OK)
+  int prepareAssetTransferMessagePack(msgPack msgPackTx,
+                                  const uint32_t lastRound, 
+                                  const uint16_t fee,
+                                  const uint64_t assetId);
+                                  
+  // Debug function to print MessagePack content
+  void debugPrintMessagePack(msgPack msgPackTx);
+
+  // Prints transaction data in a readable string format
+  void printTransactionData(msgPack msgPackTx);
+
+  // Add this function declaration to the AlgoIoT class in the private section
+  //void debugMessagePackAtPosition(msgPack msgPackTx, uint32_t errorPosition);
+
+  // Prepares an application opt-in transaction MessagePack
+  // Returns error code (0 = OK)
+  int prepareApplicationOptInMessagePack(msgPack msgPackTx,
+                                  const uint32_t lastRound, 
+                                  const uint16_t fee,
+                                  const uint64_t applicationId);
+
+  // Add this method declaration to the private section of the AlgoIoT class
+  // Prepares an asset creation transaction MessagePack
+  // Returns error code (0 = OK)
+  int prepareAssetCreationMessagePack(
+    msgPack msgPackTx,
+    const uint32_t lastRound, 
+    const uint16_t fee,
+    const char* assetName,
+    const char* unitName,
+    const char* assetURL,
+    uint8_t decimals,
+    const uint64_t total);
+
 
   public:
 
@@ -226,6 +270,43 @@ class AlgoIoT
   // Submit transaction to Algorand network
   // Return: error code (0 = OK)
   int submitTransactionToAlgorand();
+
+  // Submit asset opt-in transaction to Algorand network
+  // Return: error code (0 = OK)
+  int submitAssetOptInToAlgorand(uint64_t assetId = DEFAULT_ASSET_ID);
+
+  // Submit application opt-in transaction to Algorand network
+  // Return: error code (0 = OK)
+  int submitApplicationOptInToAlgorand(uint64_t applicationId = DEFAULT_APPLICATION_ID);
+
+  // Add this method declaration to the public section of the AlgoIoT class
+  // Submit asset creation transaction to Algorand network
+  // Return: error code (0 = OK)
+  int submitAssetCreationToAlgorand(
+    const char* assetName, 
+    const char* unitName, 
+    const char* assetURL = NULL,
+    uint8_t decimals = 0,
+    uint64_t total = DEFAULT_ASSET_TOTAL);
+
+  // Debug function to examine MessagePack at a specific position
+  void debugMessagePackAtPosition(msgPack msgPackTx, uint32_t errorPosition);
+  
+  // Add a new public method to get the sender address bytes
+  // Returns a pointer to the sender address bytes (public key)
+  const uint8_t* getSenderAddressBytes() const;
+
+  // Reusable transaction functions
+  // Create and submit a payment transaction with sensor data
+  int createPaymentTransaction(uint32_t paymentAmount = PAYMENT_AMOUNT_MICROALGOS);
+  
+  // Create and submit an asset creation transaction
+  int createAssetTransaction(const char* assetName, const char* unitName, 
+                           const char* assetURL = NULL, uint8_t decimals = 0, 
+                           uint64_t total = DEFAULT_ASSET_TOTAL);
+  
+  // Create and submit an asset opt-in transaction
+  int createAssetOptInTransaction(uint64_t assetId = DEFAULT_ASSET_ID);
 };
 
 #endif

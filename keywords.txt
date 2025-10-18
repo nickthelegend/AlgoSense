@@ -24,6 +24,12 @@ setDestinationAddress	KEYWORD2
 setAlgorandNetwork	KEYWORD2
 submitTransactionToAlgorand	KEYWORD2
 getTransactionID	KEYWORD2
+createPaymentTransaction	KEYWORD2
+createAssetTransaction	KEYWORD2
+createAssetOptInTransaction	KEYWORD2
+createPaymentTransaction	KEYWORD2
+createAssetTransaction	KEYWORD2
+createAssetOptInTransaction	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
